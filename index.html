@@ -1,0 +1,3361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Livro Devocional para Crianças baseado no Catecismo">
+    <meta name="theme-color" content="#4CAF50">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Devocional Kids">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+
+    <!-- Favicon padrão -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
+
+    <!-- Para compatibilidade com navegadores antigos -->
+    <link rel="shortcut icon" href="icons/icon-192x192.png">
+
+    <title>Livro Devocional para Crianças - v2</title>
+    
+    <style>
+        /* ============================================
+           CSS VARIABLES - TEMAS
+           ============================================ */
+        :root {
+            /* Cores base - Tema Claro */
+            --bg-primary: #f5f7fa;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e8ecf1;
+            --text-primary: #2c3e50;
+            --text-secondary: #5a6c7d;
+            --text-muted: #8b9dc3;
+            --accent-primary: #4CAF50;
+            --accent-secondary: #2196F3;
+            --accent-danger: #f44336;
+            --accent-warning: #ff9800;
+            --accent-success: #4CAF50;
+            --border-color: #e0e6ed;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --transition: all 0.3s ease;
+            --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --font-size-base: 16px;
+            --font-size-lg: 1.125rem;
+            --font-size-xl: 1.5rem;
+            --font-size-2xl: 2rem;
+        }
+
+        /* Tema Escuro */
+        [data-theme="dark"] {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-tertiary: #0f3460;
+            --text-primary: #eaeaea;
+            --text-secondary: #a0a0a0;
+            --text-muted: #6b6b6b;
+            --accent-primary: #66bb6a;
+            --accent-secondary: #42a5f5;
+            --border-color: #2d3561;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+        }
+
+        /* ============================================
+           RESET E BASE
+           ============================================ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: var(--font-size-base);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        /* ============================================
+           LAYOUT PRINCIPAL
+           ============================================ */
+        .app-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .app-header {
+            text-align: center;
+            padding: 30px 20px;
+            margin-bottom: 20px;
+        }
+
+        .app-header h1 {
+            font-size: var(--font-size-2xl);
+            color: var(--accent-primary);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .app-header p {
+            color: var(--text-secondary);
+            font-size: var(--font-size-base);
+        }
+
+        /* ============================================
+           PAINEL DE USUÁRIO
+           ============================================ */
+        .user-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition);
+        }
+
+        .user-panel:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            background: var(--bg-tertiary);
+            transition: var(--transition);
+        }
+
+        .user-info-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .user-panel-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-button {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .icon-button:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* ============================================
+           CONTROLES SUPERIORES
+           ============================================ */
+        .top-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent-primary);
+        }
+
+        /* ============================================
+           BARRA DE PROGRESSO
+           ============================================ */
+        .progress-section {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .progress-stats {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-bar-container {
+            height: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 6px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-achievements {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .achievement-badge {
+            padding: 4px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: var(--transition);
+        }
+
+        .achievement-badge.unlocked {
+            background: linear-gradient(135deg, var(--accent-warning), #ffc107);
+            color: white;
+        }
+
+        /* ============================================
+           CONTAINER DE PERGUNTA
+           ============================================ */
+        .question-container {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 20px;
+        }
+
+        .question-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-button {
+            padding: 10px 20px;
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background: var(--accent-secondary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .question-counter {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .question-counter span {
+            color: var(--accent-primary);
+        }
+
+        /* Conteúdo da Pergunta */
+        .question-content {
+            margin-bottom: 24px;
+        }
+
+        .question-title {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .question-answer {
+            background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-primary));
+            padding: 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        .question-answer-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .question-answer-text {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .question-verse {
+            background: var(--bg-tertiary);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+        }
+
+        .question-verse-ref {
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .question-verse-text {
+            font-style: italic;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .question-devotional {
+            background: var(--bg-primary);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .question-devotional-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .question-devotional-text {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* Modo Quiz */
+        .quiz-mode .question-answer-text,
+        .quiz-mode .question-verse,
+        .quiz-mode .question-devotional {
+            filter: blur(8px);
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .quiz-mode.revealed .question-answer-text,
+        .quiz-mode.revealed .question-verse,
+        .quiz-mode.revealed .question-devotional {
+            filter: none;
+            user-select: text;
+            pointer-events: auto;
+        }
+
+        .reveal-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 20px;
+        }
+
+        .reveal-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* ============================================
+           AÇÕES DA PERGUNTA
+           ============================================ */
+        .question-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .action-button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-button.primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .action-button.secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .action-button.danger {
+            background: var(--accent-danger);
+            color: white;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .action-button.active {
+            background: var(--accent-warning);
+        }
+
+        /* ============================================
+           ANOTAÇÕES
+           ============================================ */
+        .notes-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .notes-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: var(--font-size-base);
+            resize: vertical;
+            transition: var(--transition);
+        }
+
+        .notes-textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .notes-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        /* ============================================
+           NAVEGAÇÃO RÁPIDA
+           ============================================ */
+        .quick-nav {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .quick-nav-item {
+            background: var(--bg-secondary);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid var(--border-color);
+        }
+
+        .quick-nav-item:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .quick-nav-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .quick-nav-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .quick-nav-text {
+            font-weight: 600;
+            color: var(--text-primary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ============================================
+           MODAIS
+           ============================================ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: var(--bg-tertiary);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--accent-danger);
+            color: white;
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            max-height: calc(90vh - 140px);
+        }
+
+        /* ============================================
+           SELETOR DE USUÁRIO
+           ============================================ */
+        .user-selector-section {
+            margin-bottom: 24px;
+        }
+
+        .user-selector-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        .user-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .user-card {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            cursor: pointer;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .user-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .user-card-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            background: var(--bg-tertiary);
+        }
+
+        .user-card-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-card-progress {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .user-card-mini-progress {
+            height: 4px;
+            background: var(--bg-tertiary);
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .user-card-mini-bar {
+            height: 100%;
+            background: var(--accent-primary);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        /* Criar Usuário */
+        .create-user-form {
+            background: var(--bg-primary);
+            padding: 20px;
+            border-radius: var(--radius-md);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: var(--font-size-base);
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .avatar-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .avatar-option {
+            width: 48px;
+            height: 48px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--bg-secondary);
+        }
+
+        .avatar-option:hover,
+        .avatar-option.selected {
+            border-color: var(--accent-primary);
+            background: var(--bg-tertiary);
+            transform: scale(1.1);
+        }
+
+        .color-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: var(--transition);
+        }
+
+        .color-option:hover,
+        .color-option.selected {
+            border-color: var(--text-primary);
+            transform: scale(1.15);
+        }
+
+        /* ============================================
+           MODO CONVIDADO
+           ============================================ */
+        .guest-option {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-primary));
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .guest-option:hover {
+            border-color: var(--accent-secondary);
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(33, 150, 243, 0.05));
+            transform: translateY(-2px);
+        }
+
+        .guest-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #9C27B0, #E91E63);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            flex-shrink: 0;
+        }
+
+        .guest-info {
+            flex: 1;
+        }
+
+        .guest-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .guest-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .guest-arrow {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+        }
+
+        /* ============================================
+           SISTEMA DE AJUDA
+           ============================================ */
+        .help-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            z-index: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .help-button:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .help-context-button {
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .help-context-button:hover {
+            border-color: var(--accent-secondary);
+            color: var(--accent-secondary);
+        }
+
+        .help-content {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .help-section {
+            margin-bottom: 24px;
+        }
+
+        .help-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .help-section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .help-text {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .help-text p {
+            margin-bottom: 12px;
+        }
+
+        .help-tip {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 152, 0, 0.1));
+            border-left: 4px solid var(--accent-warning);
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            margin: 16px 0;
+        }
+
+        .help-tip-title {
+            font-weight: 700;
+            color: var(--accent-warning);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .help-shortcuts {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 8px 16px;
+            margin-top: 12px;
+        }
+
+        .help-shortcut-key {
+            background: var(--bg-tertiary);
+            padding: 4px 12px;
+            border-radius: var(--radius-sm);
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .help-shortcut-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .help-topics {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .help-topic-btn {
+            padding: 12px 16px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-align: left;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .help-topic-btn:hover {
+            border-color: var(--accent-primary);
+            background: rgba(76, 175, 80, 0.05);
+        }
+
+        .help-topic-btn.active {
+            border-color: var(--accent-primary);
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .help-topic-icon {
+            font-size: 1.25rem;
+        }
+
+        .form-error {
+            color: var(--accent-danger);
+            font-size: 0.9rem;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .form-error.visible {
+            display: block;
+        }
+
+        /* ============================================
+           MATRIZ DE PERGUNTAS
+           ============================================ */
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 8px;
+        }
+
+        .matrix-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .matrix-cell.completed {
+            background: var(--accent-success);
+            color: white;
+        }
+
+        .matrix-cell.uncompleted {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .matrix-cell:hover {
+            transform: scale(1.1);
+            border-color: var(--accent-primary);
+        }
+
+        .matrix-cell.current {
+            border-color: var(--accent-secondary);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3);
+        }
+
+        /* ============================================
+           ESTATÍSTICAS
+           ============================================ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: var(--bg-primary);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .streak-display {
+            background: linear-gradient(135deg, var(--accent-warning), #ffc107);
+            color: white;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .streak-number {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .streak-label {
+            font-size: 1.1rem;
+        }
+
+        /* ============================================
+           PAINEL DE CONTA
+           ============================================ */
+        .account-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .account-action-btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .account-action-btn.primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .account-action-btn.secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .account-action-btn.danger {
+            background: var(--accent-danger);
+            color: white;
+        }
+
+        .account-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* ============================================
+           TOAST NOTIFICATIONS
+           ============================================ */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 16px 24px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: toastSlideUp 0.3s ease;
+            min-width: 300px;
+        }
+
+        @keyframes toastSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--accent-success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--accent-danger);
+        }
+
+        .toast.info {
+            border-left: 4px solid var(--accent-secondary);
+        }
+
+        /* ============================================
+           MODO DE ESTUDO
+           ============================================ */
+        .study-modes {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .study-mode-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .study-mode-btn:hover,
+        .study-mode-btn.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        /* ============================================
+           RESPONSIVIDADE
+           ============================================ */
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 10px;
+            }
+
+            .user-panel {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 16px;
+                justify-content: center;
+            }
+
+            .app-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .matrix-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            .quick-nav {
+                grid-template-columns: 1fr;
+            }
+
+            .question-actions {
+                flex-direction: column;
+            }
+
+            .action-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .user-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-button span {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .matrix-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 4px;
+            }
+
+            .matrix-cell {
+                font-size: 0.75rem;
+            }
+
+            .user-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ============================================
+           UTILITÁRIOS
+           ============================================ */
+        .hidden {
+            display: none !important;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Print styles */
+        @media print {
+            .user-panel,
+            .modal-overlay,
+            .toast-container,
+            .top-controls,
+            .question-actions,
+            .quick-nav {
+                display: none !important;
+            }
+
+            .question-container {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>📖 Livro Devocional</h1>
+            <p>Baseado no Catecismo para Crianças Pequenas</p>
+        </header>
+
+        <!-- Painel de Usuário -->
+        <div class="user-panel" id="user-panel" style="display: none;">
+            <div class="user-avatar" id="user-avatar">👤</div>
+            <div>
+                <div class="user-info-name" id="user-info-name">Usuário</div>
+            </div>
+            <div class="user-panel-actions">
+                <button class="icon-button" onclick="app.showStatsModal()" title="Estatísticas">📊</button>
+                <button class="icon-button" onclick="app.showMatrixModal()" title="Matriz de Perguntas">🔲</button>
+                <button class="icon-button" onclick="app.showAccountModal()" title="Gerenciar Conta">⚙️</button>
+                <button class="icon-button" onclick="app.showUserSelector()" title="Trocar Usuário">🔄</button>
+            </div>
+        </div>
+
+        <!-- Controles Superiores -->
+        <div class="top-controls">
+            <button class="theme-toggle" onclick="app.toggleTheme()" aria-label="Alternar tema">
+                <span id="theme-icon">🌙</span>
+                <span id="theme-text">Modo Escuro</span>
+            </button>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button class="help-context-button" onclick="app.showContextualHelp()">
+                    ❓ Ajuda sobre esta tela
+                </button>
+                <div class="study-modes">
+                    <button class="study-mode-btn active" onclick="app.setStudyMode('normal')" data-mode="normal">📚 Estudo</button>
+                    <button class="study-mode-btn" onclick="app.setStudyMode('quiz')" data-mode="quiz">🎯 Quiz</button>
+                    <button class="study-mode-btn" onclick="app.setStudyMode('review')" data-mode="review">✅ Revisão</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barra de Progresso -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <span class="progress-title">📈 Seu Progresso</span>
+                <span class="progress-stats">
+                    <span id="completed-count">0</span> de <span id="total-count">50</span> perguntas
+                </span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+            </div>
+            <div class="progress-achievements" id="achievements-container">
+                <!-- Conquistas serão inseridas aqui -->
+            </div>
+        </div>
+
+        <!-- Container da Pergunta -->
+        <div class="question-container" id="question-container">
+            <div class="question-navigation">
+                <button class="nav-button" id="prev-btn" onclick="app.prevQuestion()" aria-label="Pergunta anterior">
+                    ◀ <span>Anterior</span>
+                </button>
+                <div class="question-counter">
+                    Pergunta <span id="current-number">1</span> / <span id="total-number">50</span>
+                </div>
+                <button class="nav-button" id="next-btn" onclick="app.nextQuestion()" aria-label="Próxima pergunta">
+                    <span>Próximo</span> ▶
+                </button>
+            </div>
+
+            <div class="question-content" id="question-content">
+                <h2 class="question-title" id="question-title"></h2>
+                
+                <button class="reveal-button hidden" id="reveal-btn" onclick="app.revealAnswer()">
+                    👆 Clique para revelar a resposta
+                </button>
+
+                <div class="question-answer" id="answer-section">
+                    <div class="question-answer-label">Resposta</div>
+                    <div class="question-answer-text" id="question-answer"></div>
+                </div>
+
+                <div class="question-verse" id="verse-section">
+                    <div class="question-verse-ref" id="question-verse-ref"></div>
+                    <div class="question-verse-text" id="question-verse-text"></div>
+                </div>
+
+                <div class="question-devotional" id="devotional-section">
+                    <div class="question-devotional-label">💭 Devocional</div>
+                    <div class="question-devotional-text" id="question-devotional"></div>
+                </div>
+            </div>
+
+            <!-- Seção de Anotações -->
+            <div class="notes-section" id="notes-section">
+                <div class="form-label">📝 Suas Anotações</div>
+                <textarea 
+                    class="notes-textarea" 
+                    id="notes-textarea" 
+                    placeholder="Escreva suas reflexões sobre esta lição..."
+                    onblur="app.saveNotes()"></textarea>
+                <div class="notes-actions">
+                    <button class="action-button secondary" onclick="app.clearNotes()">Limpar</button>
+                    <button class="action-button primary" onclick="app.saveNotes()">Salvar Anotação</button>
+                </div>
+            </div>
+
+            <!-- Ações -->
+            <div class="question-actions">
+                <button class="action-button secondary" id="favorite-btn" onclick="app.toggleFavorite()">
+                    🤍 Favoritar
+                </button>
+                <button class="action-button primary" id="complete-btn" onclick="app.toggleComplete()">
+                    ✓ Marcar como Concluída
+                </button>
+                <button class="action-button secondary" onclick="app.shareQuestion()">
+                    📤 Compartilhar
+                </button>
+            </div>
+        </div>
+
+        <!-- Navegação Rápida -->
+        <div class="quick-nav">
+            <div class="quick-nav-item" id="prev-question-card" onclick="app.prevQuestion()">
+                <div class="quick-nav-label">◀ Pergunta Anterior</div>
+                <div class="quick-nav-text" id="prev-question-title"></div>
+            </div>
+            <div class="quick-nav-item" id="next-question-card" onclick="app.nextQuestion()">
+                <div class="quick-nav-label">Próxima Pergunta ▶</div>
+                <div class="quick-nav-text" id="next-question-title"></div>
+            </div>
+        </div>
+    </div>
+
+        <!-- Modal: Seletor de Usuário -->
+    <div class="modal-overlay" id="user-selector-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">👥 Selecionar Usuário</h2>
+                <button class="modal-close" onclick="app.closeModal('user-selector-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <!-- Opção Convidado -->
+                <div class="user-selector-section">
+                    <h3 class="user-selector-title">👋 Quero usar como Convidado</h3>
+                    <div class="guest-option" onclick="app.selectGuestUser()">
+                        <div class="guest-avatar">🎮</div>
+                        <div class="guest-info">
+                            <div class="guest-name">Modo Convidado</div>
+                            <div class="guest-description">Use sem criar conta. Seu progresso não será salvo.</div>
+                        </div>
+                        <div class="guest-arrow">→</div>
+                    </div>
+                </div>
+
+                <!-- Usuários Existentes -->
+                <div class="user-selector-section">
+                    <h3 class="user-selector-title">👤 Usuários Cadastrados</h3>
+                    <div class="user-cards" id="user-cards">
+                        <!-- Cards serão gerados dinamicamente -->
+                    </div>
+                    <div id="no-users-message" class="form-error visible" style="text-align: center; padding: 20px;">
+                        Nenhum usuário cadastrado ainda.
+                    </div>
+                </div>
+
+                <!-- Criar Novo Usuário -->
+                <div class="user-selector-section">
+                    <h3 class="user-selector-title">✨ Criar Novo Usuário</h3>
+                    <div class="create-user-form">
+                        <div class="form-group">
+                            <label class="form-label">Nome (máx. 2 palavras)</label>
+                            <input type="text" class="form-input" id="new-user-name" maxlength="30" placeholder="Ex: Maria">
+                            <div class="form-error" id="name-error"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Escolha um Avatar</label>
+                            <div class="avatar-selector" id="avatar-selector">
+                                <div class="avatar-option selected" data-avatar="👤">👤</div>
+                                <div class="avatar-option" data-avatar="👧">👧</div>
+                                <div class="avatar-option" data-avatar="👦">👦</div>
+                                <div class="avatar-option" data-avatar="🧒">🧒</div>
+                                <div class="avatar-option" data-avatar="👩">👩</div>
+                                <div class="avatar-option" data-avatar="👨">👨</div>
+                                <div class="avatar-option" data-avatar="🧑">🧑</div>
+                                <div class="avatar-option" data-avatar="🦁">🦁</div>
+                                <div class="avatar-option" data-avatar="🐯">🐯</div>
+                                <div class="avatar-option" data-avatar="🦋">🦋</div>
+                                <div class="avatar-option" data-avatar="🌟">🌟</div>
+                                <div class="avatar-option" data-avatar="🌈">🌈</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Escolha uma Cor</label>
+                            <div class="color-selector" id="color-selector">
+                                <div class="color-option selected" style="background: #E74C3C;" data-color="#E74C3C"></div>
+                                <div class="color-option" style="background: #27AE60;" data-color="#27AE60"></div>
+                                <div class="color-option" style="background: #3498DB;" data-color="#3498DB"></div>
+                                <div class="color-option" style="background: #F1C40F;" data-color="#F1C40F"></div>
+                                <div class="color-option" style="background: #9B59B6;" data-color="#9B59B6"></div>
+                                <div class="color-option" style="background: #1ABC9C;" data-color="#1ABC9C"></div>
+                                <div class="color-option" style="background: #E67E22;" data-color="#E67E22"></div>
+                                <div class="color-option" style="background: #34495E;" data-color="#34495E"></div>
+                            </div>
+                        </div>
+
+                        <button class="action-button primary" onclick="app.createUser()" style="width: 100%; margin-top: 16px;">
+                            ✨ Criar Usuário
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Matriz de Perguntas -->
+    <div class="modal-overlay" id="matrix-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">🔲 Matriz de Perguntas</h2>
+                <button class="modal-close" onclick="app.closeModal('matrix-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="matrix-grid" id="matrix-grid">
+                    <!-- Células serão geradas dinamicamente -->
+                </div>
+                <div style="margin-top: 20px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 20px; height: 20px; background: var(--accent-success); border-radius: 4px;"></div>
+                        <span>Concluída</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 20px; height: 20px; background: var(--bg-tertiary); border-radius: 4px;"></div>
+                        <span>Pendente</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Estatísticas -->
+    <div class="modal-overlay" id="stats-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">📊 Suas Estatísticas</h2>
+                <button class="modal-close" onclick="app.closeModal('stats-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="streak-display" id="streak-display">
+                    <div class="streak-number" id="streak-number">0</div>
+                    <div class="streak-label">🔥 dias consecutivos de estudo</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-total-completed">0</div>
+                        <div class="stat-label">Perguntas Concluídas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-percentage">0%</div>
+                        <div class="stat-label">Progresso Total</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-favorites">0</div>
+                        <div class="stat-label">Favoritos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-notes">0</div>
+                        <div class="stat-label">Anotações</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Gerenciar Conta -->
+    <div class="modal-overlay" id="account-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">⚙️ Gerenciar Conta</h2>
+                <button class="modal-close" onclick="app.closeModal('account-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div class="user-avatar" id="account-avatar" style="width: 80px; height: 80px; font-size: 2.5rem; margin: 0 auto 12px;">👤</div>
+                    <h3 id="account-name" style="color: var(--text-primary);">Usuário</h3>
+                    <p id="account-created" style="color: var(--text-muted); font-size: 0.9rem;"></p>
+                </div>
+
+                <div class="account-actions">
+                    <button class="account-action-btn primary" onclick="app.markAllComplete()">
+                        ✓ Marcar Todas como Concluídas
+                    </button>
+                    <button class="account-action-btn secondary" onclick="app.resetProgress()">
+                        🔄 Resetar Progresso
+                    </button>
+                    <button class="account-action-btn secondary" onclick="app.exportData()">
+                        📥 Exportar Dados
+                    </button>
+                    <button class="account-action-btn secondary" onclick="app.importDataPrompt()">
+                        📤 Importar Dados
+                    </button>
+                    <button class="account-action-btn danger" onclick="app.deleteUser()">
+                        🗑️ Excluir Conta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Ajuda Completa -->
+    <div class="modal-overlay" id="help-modal">
+        <div class="modal" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2 class="modal-title">❓ Central de Ajuda</h2>
+                <button class="modal-close" onclick="app.closeModal('help-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="help-topics" id="help-topics">
+                    <button class="help-topic-btn active" onclick="app.showHelpSection('welcome')">
+                        <span class="help-topic-icon">👋</span>
+                        <span>Bem-vindo!</span>
+                    </button>
+                    <button class="help-topic-btn" onclick="app.showHelpSection('users')">
+                        <span class="help-topic-icon">👤</span>
+                        <span>Usuários e Contas</span>
+                    </button>
+                    <button class="help-topic-btn" onclick="app.showHelpSection('study')">
+                        <span class="help-topic-icon">📚</span>
+                        <span>Modos de Estudo</span>
+                    </button>
+                    <button class="help-topic-btn" onclick="app.showHelpSection('progress')">
+                        <span class="help-topic-icon">📈</span>
+                        <span>Progresso e Conquistas</span>
+                    </button>
+                    <button class="help-topic-btn" onclick="app.showHelpSection('features')">
+                        <span class="help-topic-icon">✨</span>
+                        <span>Outras Funcionalidades</span>
+                    </button>
+                    <button class="help-topic-btn" onclick="app.showHelpSection('shortcuts')">
+                        <span class="help-topic-icon">⌨️</span>
+                        <span>Atalhos do Teclado</span>
+                    </button>
+                </div>
+
+                <div class="help-content" id="help-content" style="margin-top: 24px;">
+                    <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Ajuda Contextual -->
+    <div class="modal-overlay" id="contextual-help-modal">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="contextual-help-title">❓ Ajuda</h2>
+                <button class="modal-close" onclick="app.closeModal('contextual-help-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="help-content" id="contextual-help-content">
+                    <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                    <button class="action-button secondary" onclick="app.closeModal('contextual-help-modal'); app.openModal('help-modal');" style="width: 100%;">
+                        📖 Ver ajuda completa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botão Flutuante de Ajuda -->
+    <button class="help-button" onclick="app.openModal('help-modal')" title="Ajuda">
+        ❓
+    </button>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        // ============================================
+        // DADOS DAS PERGUNTAS
+        // ============================================
+        const QUESTIONS_DATA = [
+            {
+                id: 1,
+                title: "Quem fez você?",
+                answer: "Deus",
+                verse: "Gênesis 1:27 (NTLH)",
+                verseText: "Assim Deus criou os seres humanos; ele os criou parecidos com Deus. Ele os criou homem e mulher.",
+                devotional: "Deus é o nosso Criador. Ele nos fez à Sua imagem, o que significa que somos especiais e únicos. Assim como um artista pinta um quadro com muito cuidado, Deus nos criou com amor e propósito. Ele nos deu a capacidade de pensar, amar e escolher. Quando olhamos no espelho, podemos lembrar que somos importantes para Deus e que Ele tem um plano maravilhoso para cada um de nós."
+            },
+            {
+                id: 2,
+                title: "O que mais Deus fez?",
+                answer: "Deus fez todas as coisas.",
+                verse: "Gênesis 1:1 (NTLH)",
+                verseText: "No princípio Deus criou o céu e a terra.",
+                devotional: "Deus é tão poderoso que criou tudo o que existe! Ele fez o sol, a lua, as estrelas, os animais, as plantas e até mesmo o ar que respiramos. Imagine só: Deus falou, e tudo passou a existir! Isso nos mostra que Deus é o dono de tudo e que Ele cuida de cada detalhe da criação. Quando vemos um lindo pôr do sol ou um animalzinho fofo, podemos agradecer a Deus por Sua criação maravilhosa."
+            },
+            {
+                id: 3,
+                title: "Por que Deus fez todas as coisas?",
+                answer: "Para a sua própria glória.",
+                verse: "Salmos 19:1 (NTLH)",
+                verseText: "Os céus anunciam a glória de Deus e o firmamento proclama a obra das suas mãos.",
+                devotional: "Deus criou todas as coisas para mostrar quem Ele é. Assim como um rei usa uma coroa para mostrar sua realeza, Deus usa a criação para mostrar Sua grandeza e beleza. Quando olhamos para as estrelas no céu ou para as flores coloridas, estamos vendo um pouco de como Deus é maravilhoso. Isso nos ajuda a entender que Deus merece todo o nosso louvor e adoração."
+            },
+            {
+                id: 4,
+                title: "Por que tudo é do jeito que é?",
+                answer: "Porque Deus decretou assim.",
+                verse: "Efésios 1:11 (NTLH)",
+                verseText: "Nele fomos escolhidos por Deus, que já havia decidido isso de acordo com o seu plano e com a sua vontade.",
+                devotional: "Deus tem um plano para todas as coisas. Ele decidiu como tudo deveria ser, assim como um pai planeja um passeio especial para sua família. Isso nos mostra que Deus está no controle de tudo e que podemos confiar Nele, mesmo quando não entendemos o que está acontecendo. Deus sabe o que é melhor para nós e para o mundo."
+            },
+            {
+                id: 5,
+                title: "Como aprendemos acerca de Deus?",
+                answer: "Deus revela-Se a Si mesmo.",
+                verse: "Romanos 1:20 (NTLH)",
+                verseText: "Pois desde a criação do mundo os atributos invisíveis de Deus, isto é, o seu poder eterno e a sua natureza divina, têm sido vistos claramente, sendo compreendidos por meio das coisas criadas.",
+                devotional: "Deus nos mostra quem Ele é de muitas maneiras. Podemos ver Seu poder nas montanhas altas e Seu amor nas flores que desabrocham. Ele também nos fala através da Bíblia, que é como uma carta de amor escrita por Ele para nós. Quando lemos a Bíblia, estamos aprendendo mais sobre quem Deus é e como Ele nos ama."
+            },
+            {
+                id: 6,
+                title: "Onde Deus Se revela?",
+                answer: "Em Sua Palavra e na natureza.",
+                verse: "Salmos 119:105 (NTLH)",
+                verseText: "A tua palavra é lâmpada que ilumina os meus passos e luz que clareia o meu caminho.",
+                devotional: "Deus se revela a nós de duas maneiras principais: através da Bíblia e da natureza. A Bíblia é como uma lanterna que nos guia no escuro, mostrando o caminho certo. A natureza, como as árvores, os rios e os animais, nos mostra a beleza e o poder de Deus. Quando lemos a Bíblia e observamos a natureza, estamos aprendendo mais sobre Deus."
+            },
+            {
+                id: 7,
+                title: "O que Deus revela na natureza?",
+                answer: "Seu caráter, lei e fúria.",
+                verse: "Romanos 1:18-20 (NTLH)",
+                verseText: "Pois do céu é revelada a ira de Deus contra toda a impiedade e injustiça dos seres humanos, que suprimem a verdade pela injustiça. Pois o que de Deus se pode conhecer é manifesto entre eles, porque Deus lho manifestou.",
+                devotional: "Através da natureza, podemos ver que Deus é poderoso e justo. Assim como um juiz é justo e não deixa o mal passar sem punição, Deus também é justo e não tolera o pecado. Isso nos ajuda a entender que precisamos de um Salvador, alguém que nos ajude a nos reconciliar com Deus. Jesus é esse Salvador!"
+            },
+            {
+                id: 8,
+                title: "O que mais é revelado em Sua Palavra?",
+                answer: "A misericórdia de Deus sobre o Seu povo.",
+                verse: "Efésios 2:4-5 (NTLH)",
+                verseText: "Mas Deus, sendo rico em misericórdia, por causa do grande amor com que nos amou, e estando nós mortos em nossos delitos, nos deu vida juntamente com Cristo — pela graça sois salvos.",
+                devotional: "A Bíblia nos mostra que Deus é cheio de amor e misericórdia. Mesmo quando fazemos coisas erradas, Deus nos oferece perdão e uma nova chance através de Jesus Cristo. Isso é como quando um pai perdoa seu filho que fez algo errado e o abraça com amor. Deus é assim conosco!"
+            },
+            {
+                id: 9,
+                title: "Onde está a Palavra de Deus hoje?",
+                answer: "A Bíblia é a Palavra de Deus.",
+                verse: "2 Timóteo 3:16-17 (NTLH)",
+                verseText: "Toda a Escritura é inspirada por Deus e útil para o ensino, para a repreensão, para a correção e para a instrução na justiça, a fim de que o servo de Deus seja apto e plenamente preparado para toda boa obra.",
+                devotional: "A Bíblia é a Palavra de Deus e foi escrita para nos ensinar, corrigir e guiar. Ela é como um manual de instruções que nos mostra como viver de maneira que agrada a Deus. Quando lemos a Bíblia, estamos aprendendo a viver melhor e a fazer o bem. É importante ler e estudar a Bíblia todos os dias para conhecer melhor a Deus."
+            },
+            {
+                id: 10,
+                title: "Quantos Deuses existem?",
+                answer: "Há um único Deus verdadeiro.",
+                verse: "Deuteronômio 6:4 (NTLH)",
+                verseText: "Ouve, ó Israel: O Senhor, o nosso Deus, é o único Senhor.",
+                devotional: "Existe apenas um Deus verdadeiro, que é o Criador de todas as coisas. Ele é único e não há outro como Ele. Isso é como quando temos um melhor amigo que é especial e único para nós. Devemos adorar somente a Deus e não a outros deuses ou ídolos, porque Ele é o único que merece nossa adoração."
+            },
+            {
+                id: 11,
+                title: "Quantas pessoas há na Divindade?",
+                answer: "Três.",
+                verse: "Mateus 28:19 (NTLH)",
+                verseText: "Portanto, vão e façam discípulos de todas as nações, batizando-os em nome do Pai, e do Filho, e do Espírito Santo.",
+                devotional: "Deus é um só, mas existe em três pessoas: Pai, Filho e Espírito Santo. Isso é chamado de Trindade. Imagine um triângulo: ele tem três lados, mas é uma só forma. Assim é Deus: três pessoas, mas um só Deus. Cada pessoa da Trindade tem um papel especial, mas todas são iguais e trabalham juntas para nos salvar e guiar."
+            },
+            {
+                id: 12,
+                title: "Quem são essas pessoas?",
+                answer: "Pai, Filho e Espírito Santo.",
+                verse: "2 Coríntios 13:13 (NTLH)",
+                verseText: "A graça do Senhor Jesus Cristo, e o amor de Deus, e a comunhão do Espírito Santo sejam com todos vocês.",
+                devotional: "O Pai é o Criador, o Filho (Jesus) é o Salvador, e o Espírito Santo é quem nos guia e nos ajuda a viver de acordo com a vontade de Deus. Juntos, eles trabalham para nos mostrar o amor de Deus e nos ajudar a viver para Ele. É como quando uma família trabalha junta para cuidar da casa: cada um tem seu papel, mas todos são importantes."
+            },
+            {
+                id: 13,
+                title: "Onde está Deus?",
+                answer: "Ele está em todos os lugares.",
+                verse: "Salmos 139:7-10 (NTLH)",
+                verseText: "Para onde poderei fugir do teu Espírito? Para onde poderei fugir da tua presença? Se subo aos céus, tu aí estás; se faço a minha cama no mais profundo abismo, tu aí estás também.",
+                devotional: "Deus está presente em todos os lugares ao mesmo tempo. Não há lugar onde possamos fugir da presença de Deus. Isso é como quando estamos em um quarto escuro e acendemos a luz: a luz enche todo o quarto. Assim é Deus: Ele está sempre conosco, nos protegendo e guiando, não importa onde estejamos."
+            },
+            {
+                id: 14,
+                title: "Há quanto tempo Deus existe?",
+                answer: "Deus sempre existiu.",
+                verse: "Salmos 90:2 (NTLH)",
+                verseText: "Antes que os montes nascessem e que tu formasses a terra e o mundo, mesmo de eternidade a eternidade, tu és Deus.",
+                devotional: "Deus não teve um começo e nunca terá um fim. Ele sempre existiu e sempre existirá. Isso é como um círculo: não tem início nem fim. Deus é assim: eterno. Isso nos mostra que Deus é confiável e que podemos depender Dele para sempre."
+            },
+            {
+                id: 15,
+                title: "Em que sentido o homem é um ser singular?",
+                answer: "Ele carrega em si a imagem de Deus.",
+                verse: "Gênesis 1:26-27 (NTLH)",
+                verseText: "Então Deus disse: 'Façamos os seres humanos à nossa imagem, parecidos conosco.' Assim Deus criou os seres humanos; ele os criou parecidos com Deus.",
+                devotional: "O homem é especial porque foi criado à imagem de Deus. Isso significa que temos a capacidade de amar, pensar e agir de maneira que reflete quem Deus é. Somos únicos e importantes para Deus, assim como um filho é especial para seus pais. Deus nos ama muito!"
+            },
+            {
+                id: 16,
+                title: "Quem foi o primeiro homem?",
+                answer: "Adão.",
+                verse: "Gênesis 2:7 (NTLH)",
+                verseText: "Então o Senhor Deus formou o homem do pó da terra e soprou em suas narinas o fôlego de vida, e o homem passou a ser um ser vivente.",
+                devotional: "Adão foi o primeiro homem criado por Deus. Ele foi feito do pó da terra e recebeu o fôlego de vida de Deus. Isso nos mostra que Deus nos deu vida e que somos especiais para Ele. Assim como um oleiro molda o barro para fazer um vaso, Deus nos moldou com cuidado e amor."
+            },
+            {
+                id: 17,
+                title: "Como era Adão quando foi criado?",
+                answer: "Adão era bom.",
+                verse: "Gênesis 1:31 (NTLH)",
+                verseText: "Deus viu tudo o que havia feito, e eis que era muito bom.",
+                devotional: "Quando Deus criou Adão, ele era perfeito e sem pecado. Adão vivia em harmonia com Deus e com a natureza. Isso nos mostra que Deus nos criou para sermos bons e felizes. Imagine um jardim cheio de flores e frutas deliciosas: assim era o mundo que Deus criou para Adão."
+            },
+            {
+                id: 18,
+                title: "Adão permaneceu bom?",
+                answer: "Não, ele pecou.",
+                verse: "Gênesis 3:6-7 (NTLH)",
+                verseText: "Vendo a mulher que a árvore era boa para se comer, agradável aos olhos e desejável para dar entendimento, tomou-lhes do fruto e comeu; e deu também ao marido, e ele comeu.",
+                devotional: "Adão e Eva desobedeceram a Deus ao comerem do fruto proibido. Isso trouxe o pecado para o mundo e separou o homem de Deus. Isso nos mostra que o pecado tem consequências ruins, mas Deus tem um plano para nos salvar. Assim como um pai disciplina seu filho para ensinar o que é certo, Deus também nos disciplina para nos trazer de volta para Ele."
+            },
+            {
+                id: 19,
+                title: "O que é pecado?",
+                answer: "Desobediência à lei de Deus.",
+                verse: "1 João 3:4 (NTLH)",
+                verseText: "Todo aquele que pratica o pecado também transgride a lei; porque o pecado é a transgressão da lei.",
+                devotional: "Pecado é quando desobedecemos a Deus e fazemos coisas que Ele não aprova. Isso nos separa de Deus e traz consequências ruins. Mas Deus nos oferece perdão através de Jesus Cristo. Imagine um filho que desobedece ao pai e depois pede perdão: assim somos nós com Deus. Ele sempre está pronto para nos perdoar."
+            },
+            {
+                id: 20,
+                title: "Qual é o castigo para o pecado?",
+                answer: "A morte.",
+                verse: "Romanos 6:23 (NTLH)",
+                verseText: "Pois o salário do pecado é a morte, mas o dom gratuito de Deus é a vida eterna, em Cristo Jesus, nosso Senhor.",
+                devotional: "O pecado traz a morte, que é a separação de Deus. Mas Deus nos oferece a vida eterna através de Jesus Cristo. Isso nos mostra que Deus é misericordioso e nos ama muito. Assim como um presente de aniversário é um dom, a vida eterna é um presente que Deus nos dá através de Jesus."
+            },
+            {
+                id: 21,
+                title: "O que veio aos homens pelo pecado de Adão?",
+                answer: "A morte veio a todos os homens.",
+                verse: "Romanos 5:12 (NTLH)",
+                verseText: "Portanto, assim como por um só homem entrou o pecado no mundo, e pelo pecado, a morte, assim também a morte passou a todos os homens, porque todos pecaram.",
+                devotional: "O pecado de Adão trouxe a morte para todos os homens. Isso significa que todos nós pecamos e precisamos de um Salvador. Deus enviou Jesus para nos salvar do pecado e da morte. Assim como um médico cura uma doença, Jesus nos cura do pecado."
+            },
+            {
+                id: 22,
+                title: "Por que o pecado de Adão afeta todos os homens?",
+                answer: "Todos nós pecamos em Adão.",
+                verse: "Romanos 5:19 (NTLH)",
+                verseText: "Pois, assim como, por uma só ofensa, veio o juízo sobre todos os homens para condenação, assim também, por um só ato de justiça, veio a graça sobre todos os homens para justificação de vida.",
+                devotional: "Todos nós somos afetados pelo pecado de Adão porque ele foi o representante de toda a humanidade. Mas Deus nos oferece perdão e vida nova através de Jesus Cristo. Assim como um capitão representa seu time, Adão representou toda a humanidade."
+            },
+            {
+                id: 23,
+                title: "Todos os homens deverão morrer por causa do pecado?",
+                answer: "Não. Deus elegeu alguns homens para a vida.",
+                verse: "Efésios 1:4-5 (NTLH)",
+                verseText: "Assim como nos escolheu, nele, antes da fundação do mundo, para sermos santos e irrepreensíveis perante ele; e em amor nos predestinou para ele, para a adoção de filhos, por meio de Jesus Cristo.",
+                devotional: "Deus escolheu algumas pessoas para receber a vida eterna através de Jesus Cristo. Isso nos mostra que Deus é soberano e que Sua escolha é baseada em Seu amor e misericórdia. Assim como um professor escolhe alguns alunos para uma tarefa especial, Deus escolheu algumas pessoas para serem Suas."
+            },
+            {
+                id: 24,
+                title: "Como podemos ser salvos do pecado e da morte?",
+                answer: "Somente por meio de Jesus Cristo.",
+                verse: "Atos 4:12 (NTLH)",
+                verseText: "E não há salvação em nenhum outro; porque abaixo do céu não existe nenhum outro nome, dado entre os homens, pelo qual importemos ser salvos.",
+                devotional: "Jesus Cristo é o único caminho para a salvação. Ele morreu na cruz para pagar pelos nossos pecados e nos oferecer a vida eterna. Isso nos mostra que Deus nos ama e quer que todos sejam salvos. Assim como uma ponte conecta dois lados de um rio, Jesus é a ponte que nos conecta a Deus."
+            },
+            {
+                id: 25,
+                title: "Quem é Jesus Cristo?",
+                answer: "Ele é o Filho de Deus.",
+                verse: "João 3:16 (NTLH)",
+                verseText: "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.",
+                devotional: "Jesus é o Filho de Deus, enviado para nos salvar. Ele é Deus em forma humana e veio ao mundo para nos mostrar o amor de Deus e nos oferecer a vida eterna. Assim como um príncipe deixa seu castelo para ajudar seu povo, Jesus deixou o céu para nos salvar."
+            },
+            {
+                id: 26,
+                title: "Jesus pecou?",
+                answer: "Não. Somente Ele é justo.",
+                verse: "1 Pedro 2:22 (NTLH)",
+                verseText: "Ele não cometeu pecado, nem dolo algum se achou em sua boca.",
+                devotional: "Jesus nunca pecou e sempre obedeceu a Deus. Ele é perfeito e justo, e por isso pode nos salvar do pecado. Isso nos mostra que Jesus é o único que pode nos reconciliar com Deus. Assim como um juiz justo não comete injustiça, Jesus é perfeito em tudo."
+            },
+            {
+                id: 27,
+                title: "O que Jesus fez por Seu povo?",
+                answer: "Ele venceu a morte.",
+                verse: "1 Coríntios 15:54-55 (NTLH)",
+                verseText: "Cumprir-se-á, então, a palavra escrita: 'Tragada foi a morte pela vitória. Onde está, ó morte, a tua vitória? Onde está, ó morte, o teu aguilhão?'",
+                devotional: "Jesus morreu na cruz e ressuscitou ao terceiro dia, vencendo a morte. Isso nos mostra que Ele tem poder sobre a morte e nos oferece a vida eterna. Assim como um herói vence o vilão, Jesus venceu a morte para nos salvar."
+            },
+            {
+                id: 28,
+                title: "Como Jesus fez isso?",
+                answer: "Ele morreu e depois ressuscitou.",
+                verse: "1 Coríntios 15:3-4 (NTLH)",
+                verseText: "Porque primeiramente vos entreguei o que também recebi: que Cristo morreu pelos nossos pecados, segundo as Escrituras, e que foi sepultado e ressuscitou ao terceiro dia, segundo as Escrituras.",
+                devotional: "Jesus morreu na cruz para pagar pelos nossos pecados e ressuscitou ao terceiro dia. Isso nos mostra que Ele é poderoso e que Sua morte e ressurreição nos dão a vida eterna. Assim como uma semente morre para dar vida a uma planta, Jesus morreu para nos dar vida."
+            },
+            {
+                id: 29,
+                title: "O que mais Jesus venceu?",
+                answer: "Jesus venceu todos os Seus inimigos.",
+                verse: "Colossenses 2:15 (NTLH)",
+                verseText: "E, despojando os principados e as potestades, publicamente os expôs ao desdém, triunfando deles na cruz.",
+                devotional: "Jesus venceu todos os poderes do mal, incluindo o pecado, a morte e o diabo. Isso nos mostra que Ele é poderoso e que podemos confiar Nele para nos proteger. Assim como um rei vence seus inimigos, Jesus venceu todos os poderes do mal."
+            },
+            {
+                id: 30,
+                title: "Os inimigos de Jesus são poderosos?",
+                answer: "Eles se tornaram nada.",
+                verse: "1 João 3:8 (NTLH)",
+                verseText: "Aquele que pratica o pecado procede do diabo, porque o diabo vive pecando desde o princípio. Para isto se manifestou o Filho de Deus: para destruir as obras do diabo.",
+                devotional: "Os inimigos de Jesus não têm poder sobre Ele. Jesus os venceu na cruz e nos deu a vitória. Isso nos mostra que podemos confiar em Jesus para nos proteger do mal. Assim como um leão vence seus inimigos, Jesus venceu todos os poderes do mal."
+            },
+            {
+                id: 31,
+                title: "O que Jesus deu ao Seu povo?",
+                answer: "Sua própria justiça.",
+                verse: "2 Coríntios 5:21 (NTLH)",
+                verseText: "Aquele que não conheceu pecado, ele o fez pecado por nós; para que, nele, fôssemos feitos justiça de Deus.",
+                devotional: "Jesus nos deu Sua justiça, o que significa que somos perdoados e aceitos por Deus. Isso nos mostra que Deus nos ama e quer que vivamos para Ele. Assim como um presente especial, a justiça de Jesus é um dom que recebemos quando cremos Nele."
+            },
+            {
+                id: 32,
+                title: "O que Ele tomou do Seu povo para Si?",
+                answer: "Os pecados.",
+                verse: "1 Pedro 2:24 (NTLH)",
+                verseText: "Carregando ele mesmo em seu corpo, sobre o madeiro, os nossos pecados, para que nós, mortos para os pecados, vivamos para a justiça; por suas chagas, fostes sarados.",
+                devotional: "Jesus levou nossos pecados sobre Si na cruz. Isso nos mostra que Ele nos ama e quer nos libertar do pecado. Por causa de Jesus, podemos viver para Deus. Assim como um médico cura uma doença, Jesus nos cura do pecado."
+            },
+            {
+                id: 33,
+                title: "Como a obra de Cristo é trazida ao Seu povo?",
+                answer: "Pelo Espírito Santo.",
+                verse: "João 16:8 (NTLH)",
+                verseText: "E, quando ele vier, convencerá o mundo do pecado, da justiça e do juízo.",
+                devotional: "O Espírito Santo nos mostra nossa necessidade de Jesus e nos ajuda a entender a verdade. Ele nos guia e nos ajuda a viver para Deus. Isso nos mostra que o Espírito Santo é nosso ajudador. Assim como um professor ajuda seus alunos, o Espírito Santo nos ajuda a entender a verdade."
+            },
+            {
+                id: 34,
+                title: "Como o Espírito Santo faz isto?",
+                answer: "Ele nos dá a fé.",
+                verse: "Efésios 2:8-9 (NTLH)",
+                verseText: "Porque pela graça sois salvos, mediante a fé; e isto não vem de vós; é dom de Deus; não de obras, para que ninguém se glorie.",
+                devotional: "O Espírito Santo nos dá a fé para crer em Jesus. Isso nos mostra que a salvação é um dom de Deus e não algo que podemos conquistar por nós mesmos. Assim como um presente é dado com amor, a fé é um dom que recebemos do Espírito Santo."
+            },
+            {
+                id: 35,
+                title: "O que é fé?",
+                answer: "Fé é confiar em Jesus para a salvação.",
+                verse: "Hebreus 11:1 (NTLH)",
+                verseText: "Ora, a fé é a certeza de coisas que se esperam, a convicção de fatos que se não veem.",
+                devotional: "Fé é confiar em Jesus mesmo quando não podemos vê-Lo. É acreditar que Ele nos ama e que nos salvou. Isso nos mostra que a fé é importante para nossa vida com Deus. Assim como confiamos em nossos pais, podemos confiar em Jesus."
+            },
+            {
+                id: 36,
+                title: "Como podemos reconhecer a fé verdadeira?",
+                answer: "A fé verdadeira produz boas obras.",
+                verse: "Tiago 2:17 (NTLH)",
+                verseText: "Assim, também a fé, se não tiver obras, por si só está morta.",
+                devotional: "A fé verdadeira se mostra através de nossas ações. Quando amamos a Deus e ao próximo, estamos mostrando que nossa fé é real. Isso nos mostra que a fé e as obras andam juntas. Assim como uma árvore dá frutos, a fé verdadeira produz boas obras."
+            },
+            {
+                id: 37,
+                title: "Quem é o povo de Cristo?",
+                answer: "O povo de Cristo é o povo que integra a sua Igreja.",
+                verse: "Efésios 5:25-27 (NTLH)",
+                verseText: "Maridos, amai vossa mulher, como também Cristo amou a igreja e a si mesmo se entregou por ela, para que a santificasse, tendo-a purificado por meio da lavagem de água pela palavra.",
+                devotional: "A Igreja é o povo de Deus, que é amado e purificado por Jesus. Somos chamados a viver em santidade e a mostrar o amor de Deus ao mundo. Isso nos mostra que a Igreja é importante para Deus. Assim como uma família se ama e cuida uns dos outros, a Igreja é uma família que se ama e cuida."
+            },
+            {
+                id: 38,
+                title: "Quais são os pontos característicos de Sua Igreja?",
+                answer: "A Palavra, a disciplina e os sacramentos.",
+                verse: "Atos 2:42 (NTLH)",
+                verseText: "E perseveravam na doutrina dos apóstolos e na comunhão, no partir do pão e nas orações.",
+                devotional: "A Igreja é caracterizada pelo ensino da Bíblia, pelo cuidado e correção dos membros (disciplina) e pelos sacramentos (Batismo e Ceia do Senhor). Isso nos mostra que a Igreja é um lugar de aprendizado e crescimento. Assim como uma escola ensina e corrige, a Igreja ensina e corrige com amor."
+            },
+            {
+                id: 39,
+                title: "Como a Palavra é um traço característico da Igreja?",
+                answer: "Toda a Palavra de Deus é pregada.",
+                verse: "2 Timóteo 4:2 (NTLH)",
+                verseText: "Prega a palavra, insta, quer seja oportuno, quer não, corrige, repreende, exorta com toda a longanimidade e doutrina.",
+                devotional: "A Igreja deve pregar toda a Bíblia, ensinando a verdade de Deus. Isso nos ajuda a crescer na fé e a viver de acordo com a vontade de Deus. Assim como um professor ensina todas as matérias, a Igreja ensina toda a Bíblia."
+            },
+            {
+                id: 40,
+                title: "Como a disciplina é um traço característico da Igreja?",
+                answer: "O povo de Deus é protegido.",
+                verse: "Mateus 18:15-17 (NTLH)",
+                verseText: "Se teu irmão pecar contra ti, vai argui-lo entre ti e ele só. Se ele te ouvir, ganhaste a teu irmão. Se, porém, não te ouvir, toma ainda contigo uma ou duas pessoas.",
+                devotional: "A disciplina na Igreja é importante para proteger e guiar o povo de Deus. Ela nos ajuda a viver de maneira que agrada a Deus e a crescer na fé. Assim como um pai corrige seu filho com amor, a Igreja corrige seus membros com amor."
+            },
+            {
+                id: 41,
+                title: "O que são sacramentos?",
+                answer: "Sinais e selos da aliança de Deus.",
+                verse: "Gênesis 17:11 (NTLH)",
+                verseText: "Circuncidareis a carne do vosso prepúcio; será isso por sinal da aliança entre mim e vós.",
+                devotional: "Os sacramentos são sinais visíveis da promessa de Deus para o Seu povo. Eles nos lembram do amor e da fidelidade de Deus. Isso nos mostra que Deus sempre cumpre Suas promessas. Assim como um anel de casamento é um sinal de amor, os sacramentos são sinais do amor de Deus."
+            },
+            {
+                id: 42,
+                title: "Que sacramentos existem?",
+                answer: "O Batismo e Ceia do Senhor.",
+                verse: "Mateus 28:19 (NTLH)",
+                verseText: "Ide, portanto, fazei discípulos de todas as nações, batizando-os em nome do Pai, e do Filho, e do Espírito Santo.",
+                devotional: "O Batismo e a Ceia do Senhor são sacramentos que nos lembram do amor de Deus. O Batismo mostra que somos parte da família de Deus, e a Ceia do Senhor nos lembra do sacrifício de Jesus. Assim como um batismo é um sinal de que pertencemos a Deus, a Ceia do Senhor é um sinal de que Jesus morreu por nós."
+            },
+            {
+                id: 43,
+                title: "Quem é o Cabeça da Igreja?",
+                answer: "Jesus Cristo.",
+                verse: "Efésios 5:23 (NTLH)",
+                verseText: "Porque o marido é o cabeça da mulher, como também Cristo é o cabeça da igreja, sendo ele mesmo o salvador do corpo.",
+                devotional: "Jesus é o líder da Igreja. Ele nos guia e nos protege. Isso nos mostra que devemos seguir a Jesus e obedecer à Sua vontade. Assim como um capitão lidera seu time, Jesus lidera a Igreja."
+            },
+            {
+                id: 44,
+                title: "Que ofícios Jesus designou para a Igreja?",
+                answer: "Presbíteros e diáconos.",
+                verse: "1 Timóteo 3:1-2 (NTLH)",
+                verseText: "Fiel é a palavra: se alguém aspira ao episcopado, excelente obra almeja. É necessário, pois, que o bispo seja irrepreensível, esposo de uma só mulher, temperante, sóbrio, modesto, hospitaleiro, apto para ensinar.",
+                devotional: "Jesus designou líderes para cuidar da Igreja. Os presbíteros (ou pastores) ensinam e guiam, e os diáconos servem e ajudam. Isso nos mostra que a Igreja é organizada para cuidar do povo de Deus. Assim como uma família tem pais que cuidam dos filhos, a Igreja tem líderes que cuidam do povo de Deus."
+            },
+            {
+                id: 45,
+                title: "A Igreja é perfeita?",
+                answer: "Ela está caminhando para a perfeição.",
+                verse: "Efésios 4:12-13 (NTLH)",
+                verseText: "Com vistas ao aperfeiçoamento dos santos para o desempenho do seu serviço, para a edificação do corpo de Cristo, até que todos cheguemos à unidade da fé e do pleno conhecimento do Filho de Deus.",
+                devotional: "A Igreja não é perfeita ainda, mas está crescendo e se tornando mais como Jesus. Isso nos mostra que devemos trabalhar juntos para viver de acordo com a vontade de Deus. Assim como uma planta cresce e se torna mais forte, a Igreja cresce e se torna mais como Jesus."
+            },
+            {
+                id: 46,
+                title: "Quando ela será perfeita?",
+                answer: "Na ressurreição.",
+                verse: "1 Coríntios 15:52 (NTLH)",
+                verseText: "Num momento, num abrir e fechar de olhos, ao ressoar da última trombeta. A trombeta soará, os mortos ressuscitarão incorruptíveis, e nós seremos transformados.",
+                devotional: "A Igreja será perfeita quando Jesus voltar e ressuscitar os mortos. Isso nos mostra que Deus tem um plano para nos tornar perfeitos e viver com Ele para sempre. Assim como uma lagarta se transforma em borboleta, nós seremos transformados na ressurreição."
+            },
+            {
+                id: 47,
+                title: "O que vai acontecer na ressurreição?",
+                answer: "Cristo vai julgar as obras de todos os homens.",
+                verse: "Apocalipse 20:12 (NTLH)",
+                verseText: "Vi também os mortos, os grandes e os pequenos, postos em pé diante do trono. Então, se abriram livros. Ainda outro livro, o Livro da Vida, foi aberto.",
+                devotional: "Na ressurreição, Jesus julgará todas as pessoas de acordo com suas obras. Isso nos mostra que devemos viver de maneira que agrada a Deus e que somos responsáveis por nossas ações. Assim como um juiz julga com justiça, Jesus julgará com justiça."
+            },
+            {
+                id: 48,
+                title: "O que será dos que praticaram a justiça?",
+                answer: "Eles viverão com Jesus para sempre.",
+                verse: "Mateus 25:34 (NTLH)",
+                verseText: "Então, dirá o Rei aos que estiverem à sua direita: 'Vinde, benditos de meu Pai! Entrai na posse do reino que vos está preparado desde a fundação do mundo.'",
+                devotional: "Aqueles que viveram de acordo com a vontade de Deus viverão com Jesus para sempre. Isso nos mostra que Deus recompensará aqueles que O amam e obedecem. Assim como um rei recompensa seus servos fiéis, Jesus recompensará aqueles que O amam."
+            },
+            {
+                id: 49,
+                title: "O que será dos que Jesus condenar?",
+                answer: "Eles perecerão para sempre.",
+                verse: "Mateus 25:41 (NTLH)",
+                verseText: "Então, dirá também aos que estiverem à sua esquerda: 'Apartai-vos de mim, malditos, para o fogo eterno, preparado para o diabo e seus anjos.'",
+                devotional: "Aqueles que não obedeceram a Deus serão separados Dele para sempre. Isso nos mostra que devemos tomar cuidado para viver de acordo com a vontade de Deus. Assim como um juiz condena os culpados, Jesus condenará aqueles que não O obedeceram."
+            },
+            {
+                id: 50,
+                title: "O que este julgamento promove em Cristo?",
+                answer: "Exalta a Sua glória.",
+                verse: "Filipenses 2:10-11 (NTLH)",
+                verseText: "Para que ao nome de Jesus se dobre todo joelho, nos céus, na terra e debaixo da terra, e toda língua confesse que Jesus Cristo é Senhor, para glória de Deus Pai.",
+                devotional: "O julgamento mostrará a todos que Jesus é o Senhor e que Ele merece toda a honra e glória. Isso nos mostra que devemos adorar a Jesus e viver para Ele. Assim como um rei é honrado por seu povo, Jesus será honrado por todos."
+            }
+        ];
+
+        // ============================================
+        // CLASSE PRINCIPAL DA APLICAÇÃO
+        // ============================================
+        class DevotionalApp {
+            constructor() {
+                this.currentQuestionIndex = 0;
+                this.currentUser = null;
+                this.studyMode = 'normal'; // normal, quiz, review
+                this.data = this.loadData();
+                this.achievements = [
+                    { id: 'first', name: '🌟 Primeira Lição', condition: (u) => u.progress.length >= 1 },
+                    { id: 'ten', name: '🔥 10 Completadas', condition: (u) => u.progress.length >= 10 },
+                    { id: 'half', name: '⭐ Metade do Caminho', condition: (u) => u.progress.length >= 25 },
+                    { id: 'complete', name: '🏆 Catecismo Completo', condition: (u) => u.progress.length >= 50 }
+                ];
+                
+                this.init();
+            }
+
+            // ============================================
+            // PERSISTÊNCIA DE DADOS
+            // ============================================
+            loadData() {
+                const defaultData = { users: {}, lastUser: null };
+                try {
+                    const saved = localStorage.getItem('devotionalData_v2');
+                    if (saved) {
+                        return { ...defaultData, ...JSON.parse(saved) };
+                    }
+                    // Migração da versão 1
+                    return this.migrateFromV1() || defaultData;
+                } catch (e) {
+                    return defaultData;
+                }
+            }
+
+            migrateFromV1() {
+                try {
+                    const oldUsers = localStorage.getItem('users');
+                    const oldColors = localStorage.getItem('userColors');
+                    if (oldUsers) {
+                        const users = JSON.parse(oldUsers);
+                        const colors = JSON.parse(oldColors || '{}');
+                        const newData = { users: {}, lastUser: null };
+                        
+                        Object.keys(users).forEach(name => {
+                            newData.users[name] = {
+                                profile: {
+                                    name,
+                                    avatar: '👤',
+                                    color: colors[name] || '#E74C3C',
+                                    createdAt: new Date().toISOString()
+                                },
+                                progress: users[name] || [],
+                                favorites: [],
+                                notes: {},
+                                streak: { count: 0, lastStudy: null }
+                            };
+                        });
+                        
+                        return newData;
+                    }
+                } catch (e) {
+                    console.error('Migration error:', e);
+                }
+                return null;
+            }
+
+            saveData() {
+                // Não salvar dados se for usuário convidado
+                if (this.isGuestUser()) return;
+                
+                try {
+                    localStorage.setItem('devotionalData_v2', JSON.stringify(this.data));
+                } catch (e) {
+                    this.showToast('Erro ao salvar dados', 'error');
+                }
+            }
+
+            // ============================================
+            // INICIALIZAÇÃO
+            // ============================================
+            init() {
+                this.loadTheme();
+                this.setupEventListeners();
+                
+                // Inicializar conteúdo da ajuda
+                document.getElementById('help-content').innerHTML = this.getFullHelpContent('welcome');
+                
+                if (this.data.lastUser && this.data.users[this.data.lastUser]) {
+                    this.selectUser(this.data.lastUser);
+                } else {
+                    this.showUserSelector();
+                }
+            }
+
+            setupEventListeners() {
+                // Navegação por teclado
+                document.addEventListener('keydown', (e) => {
+                    if (document.querySelector('.modal-overlay.active')) return;
+                    
+                    if (e.key === 'ArrowLeft') this.prevQuestion();
+                    if (e.key === 'ArrowRight') this.nextQuestion();
+                    if (e.key === ' ') {
+                        e.preventDefault();
+                        this.toggleComplete();
+                    }
+                });
+
+                // Swipe para mobile
+                let touchStartX = 0;
+                document.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                });
+                document.addEventListener('touchend', (e) => {
+                    const touchEndX = e.changedTouches[0].screenX;
+                    const diff = touchStartX - touchEndX;
+                    if (Math.abs(diff) > 50) {
+                        if (diff > 0) this.nextQuestion();
+                        else this.prevQuestion();
+                    }
+                });
+
+                // Seleção de avatar
+                document.querySelectorAll('.avatar-option').forEach(opt => {
+                    opt.addEventListener('click', () => {
+                        document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+                        opt.classList.add('selected');
+                    });
+                });
+
+                // Seleção de cor
+                document.querySelectorAll('.color-option').forEach(opt => {
+                    opt.addEventListener('click', () => {
+                        document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+                        opt.classList.add('selected');
+                    });
+                });
+            }
+
+            // ============================================
+            // GESTÃO DE USUÁRIOS
+            // ============================================
+            showUserSelector() {
+                this.renderUserCards();
+                this.openModal('user-selector-modal');
+            }
+
+            selectGuestUser() {
+                // Criar usuário convidado temporário
+                this.currentUser = '__guest__';
+                this.data.users['__guest__'] = {
+                    profile: {
+                        name: 'Convidado',
+                        avatar: '🎮',
+                        color: '#9C27B0',
+                        createdAt: new Date().toISOString()
+                    },
+                    progress: [],
+                    favorites: [],
+                    notes: {},
+                    streak: { count: 0, lastStudy: null },
+                    isGuest: true
+                };
+                
+                this.closeModal('user-selector-modal');
+                this.updateUserPanel();
+                this.renderQuestion();
+                this.updateProgress();
+                this.showToast('Modo Convidado ativado! Seu progresso não será salvo.', 'info');
+            }
+
+            isGuestUser() {
+                return this.currentUser === '__guest__' || this.data.users[this.currentUser]?.isGuest;
+            }
+
+            renderUserCards() {
+                const container = document.getElementById('user-cards');
+                const noUsersMsg = document.getElementById('no-users-message');
+                const users = Object.keys(this.data.users);
+
+                if (users.length === 0) {
+                    container.innerHTML = '';
+                    noUsersMsg.style.display = 'block';
+                    return;
+                }
+
+                noUsersMsg.style.display = 'none';
+                container.innerHTML = users.map(name => {
+                    const user = this.data.users[name];
+                    const progress = user.progress.length;
+                    const percentage = Math.round((progress / QUESTIONS_DATA.length) * 100);
+                    
+                    return `
+                        <div class="user-card" onclick="app.selectUser('${name}')">
+                            <div class="user-card-avatar" style="background: ${user.profile.color}20; color: ${user.profile.color};">
+                                ${user.profile.avatar}
+                            </div>
+                            <div class="user-card-name" style="color: ${user.profile.color};">${name}</div>
+                            <div class="user-card-progress">${progress}/${QUESTIONS_DATA.length} (${percentage}%)</div>
+                            <div class="user-card-mini-progress">
+                                <div class="user-card-mini-bar" style="width: ${percentage}%; background: ${user.profile.color};"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            createUser() {
+                const nameInput = document.getElementById('new-user-name');
+                const name = nameInput.value.trim();
+                const errorEl = document.getElementById('name-error');
+
+                // Validações
+                if (!name) {
+                    errorEl.textContent = 'Por favor, digite um nome.';
+                    errorEl.classList.add('visible');
+                    return;
+                }
+
+                if (name.split(/\s+/).length > 2) {
+                    errorEl.textContent = 'O nome deve ter no máximo 2 palavras.';
+                    errorEl.classList.add('visible');
+                    return;
+                }
+
+                if (this.data.users[name]) {
+                    errorEl.textContent = 'Este usuário já existe.';
+                    errorEl.classList.add('visible');
+                    return;
+                }
+
+                // Obter seleções
+                const avatar = document.querySelector('.avatar-option.selected')?.dataset.avatar || '👤';
+                const color = document.querySelector('.color-option.selected')?.dataset.color || '#E74C3C';
+
+                // Criar usuário
+                this.data.users[name] = {
+                    profile: {
+                        name,
+                        avatar,
+                        color,
+                        createdAt: new Date().toISOString()
+                    },
+                    progress: [],
+                    favorites: [],
+                    notes: {},
+                    streak: { count: 0, lastStudy: null }
+                };
+
+                this.saveData();
+                this.showToast(`Usuário "${name}" criado com sucesso!`, 'success');
+                
+                nameInput.value = '';
+                errorEl.classList.remove('visible');
+                this.renderUserCards();
+            }
+
+            selectUser(name) {
+                this.currentUser = name;
+                this.data.lastUser = name;
+                this.updateStreak();
+                this.saveData();
+                
+                this.closeModal('user-selector-modal');
+                this.updateUserPanel();
+                this.renderQuestion();
+                this.updateProgress();
+            }
+
+            updateUserPanel() {
+                const panel = document.getElementById('user-panel');
+                if (!this.currentUser) {
+                    panel.style.display = 'none';
+                    return;
+                }
+
+                const user = this.data.users[this.currentUser];
+                panel.style.display = 'flex';
+                
+                document.getElementById('user-avatar').textContent = user.profile.avatar;
+                document.getElementById('user-avatar').style.background = user.profile.color + '20';
+                document.getElementById('user-avatar').style.color = user.profile.color;
+                document.getElementById('user-info-name').textContent = user.profile.name;
+                document.getElementById('user-info-name').style.color = user.profile.color;
+                
+                // Se for convidado, mostrar aviso sutil
+                if (user.isGuest) {
+                    document.getElementById('user-info-name').innerHTML += ' <span style="font-size: 0.75rem; opacity: 0.7;">(temporário)</span>';
+                }
+            }
+
+            deleteUser() {
+                if (!this.currentUser) return;
+                
+                // Se for convidado, apenas sair do modo convidado
+                if (this.isGuestUser()) {
+                    this.currentUser = null;
+                    this.closeModal('account-modal');
+                    this.showToast('Sessão de convidado encerrada', 'info');
+                    this.showUserSelector();
+                    return;
+                }
+                
+                if (confirm(`Tem certeza que deseja excluir o usuário "${this.currentUser}"?\n\nEsta ação não pode ser desfeita.`)) {
+                    delete this.data.users[this.currentUser];
+                    this.currentUser = null;
+                    this.data.lastUser = null;
+                    this.saveData();
+                    
+                    this.closeModal('account-modal');
+                    this.showToast('Usuário excluído', 'info');
+                    this.showUserSelector();
+                }
+            }
+
+            // ============================================
+            // GESTÃO DE PERGUNTAS
+            // ============================================
+            renderQuestion() {
+                const question = QUESTIONS_DATA[this.currentQuestionIndex];
+                const user = this.currentUser ? this.data.users[this.currentUser] : null;
+                
+                // Atualizar números
+                document.getElementById('current-number').textContent = question.id;
+                document.getElementById('total-number').textContent = QUESTIONS_DATA.length;
+                
+                // Conteúdo
+                document.getElementById('question-title').textContent = question.title;
+                document.getElementById('question-answer').textContent = question.answer;
+                document.getElementById('question-verse-ref').innerHTML = `📖 ${question.verse}`;
+                document.getElementById('question-verse-text').textContent = question.verseText;
+                document.getElementById('question-devotional').textContent = question.devotional;
+
+                // Navegação rápida
+                const prevCard = document.getElementById('prev-question-card');
+                const nextCard = document.getElementById('next-question-card');
+                
+                if (this.studyMode === 'review' && user && user.progress.length > 0) {
+                    // No modo revisão, mostrar apenas perguntas concluídas
+                    const completedIds = user.progress.sort((a, b) => a - b);
+                    const currentId = question.id;
+                    const currentIndexInCompleted = completedIds.indexOf(currentId);
+                    
+                    // Card anterior
+                    if (currentIndexInCompleted > 0) {
+                        const prevCompletedId = completedIds[currentIndexInCompleted - 1];
+                        const prevQuestion = QUESTIONS_DATA.find(q => q.id === prevCompletedId);
+                        prevCard.classList.remove('disabled');
+                        document.getElementById('prev-question-title').textContent = prevQuestion.title;
+                    } else {
+                        prevCard.classList.add('disabled');
+                        document.getElementById('prev-question-title').textContent = 'Início da revisão';
+                    }
+                    
+                    // Card próximo
+                    if (currentIndexInCompleted < completedIds.length - 1) {
+                        const nextCompletedId = completedIds[currentIndexInCompleted + 1];
+                        const nextQuestion = QUESTIONS_DATA.find(q => q.id === nextCompletedId);
+                        nextCard.classList.remove('disabled');
+                        document.getElementById('next-question-title').textContent = nextQuestion.title;
+                    } else {
+                        nextCard.classList.add('disabled');
+                        document.getElementById('next-question-title').textContent = 'Fim da revisão';
+                    }
+                } else {
+                    // Modo normal e quiz - navegação sequencial normal
+                    if (this.currentQuestionIndex > 0) {
+                        prevCard.classList.remove('disabled');
+                        document.getElementById('prev-question-title').textContent = QUESTIONS_DATA[this.currentQuestionIndex - 1].title;
+                    } else {
+                        prevCard.classList.add('disabled');
+                        document.getElementById('prev-question-title').textContent = 'Início';
+                    }
+
+                    if (this.currentQuestionIndex < QUESTIONS_DATA.length - 1) {
+                        nextCard.classList.remove('disabled');
+                        document.getElementById('next-question-title').textContent = QUESTIONS_DATA[this.currentQuestionIndex + 1].title;
+                    } else {
+                        nextCard.classList.add('disabled');
+                        document.getElementById('next-question-title').textContent = 'Fim';
+                    }
+                }
+
+                // Botões de navegação
+                if (this.studyMode === 'review' && user) {
+                    // No modo revisão, verificar apenas perguntas concluídas
+                    const completedIds = user.progress.sort((a, b) => a - b);
+                    const currentId = question.id;
+                    const currentIndexInCompleted = completedIds.indexOf(currentId);
+                    
+                    document.getElementById('prev-btn').disabled = currentIndexInCompleted <= 0;
+                    document.getElementById('next-btn').disabled = currentIndexInCompleted >= completedIds.length - 1;
+                } else {
+                    // Modo normal e quiz - navegação sequencial normal
+                    document.getElementById('prev-btn').disabled = this.currentQuestionIndex === 0;
+                    document.getElementById('next-btn').disabled = this.currentQuestionIndex === QUESTIONS_DATA.length - 1;
+                }
+
+                // Botão de completar
+                const isCompleted = user?.progress.includes(question.id);
+                const completeBtn = document.getElementById('complete-btn');
+                completeBtn.innerHTML = isCompleted ? '✓ Concluída' : '○ Marcar como Concluída';
+                completeBtn.classList.toggle('active', isCompleted);
+
+                // Botão de favorito
+                const isFavorite = user?.favorites.includes(question.id);
+                const favBtn = document.getElementById('favorite-btn');
+                favBtn.innerHTML = isFavorite ? '❤️ Favoritada' : '🤍 Favoritar';
+                favBtn.classList.toggle('active', isFavorite);
+
+                // Anotações
+                const notesTextarea = document.getElementById('notes-textarea');
+                notesTextarea.value = user?.notes[question.id] || '';
+
+                // Modo quiz
+                this.updateQuizMode();
+            }
+
+            prevQuestion() {
+                if (this.studyMode === 'review') {
+                    // No modo revisão, navegar apenas entre perguntas concluídas
+                    const user = this.currentUser ? this.data.users[this.currentUser] : null;
+                    if (!user || user.progress.length === 0) return;
+                    
+                    // Ordenar progresso e encontrar índice atual
+                    const completedIds = user.progress.sort((a, b) => a - b);
+                    const currentId = QUESTIONS_DATA[this.currentQuestionIndex].id;
+                    const currentIndexInCompleted = completedIds.indexOf(currentId);
+                    
+                    // Se encontrou e não é o primeiro, vá para o anterior concluído
+                    if (currentIndexInCompleted > 0) {
+                        const prevCompletedId = completedIds[currentIndexInCompleted - 1];
+                        this.currentQuestionIndex = QUESTIONS_DATA.findIndex(q => q.id === prevCompletedId);
+                        this.renderQuestion();
+                    }
+                } else {
+                    // Modo normal e quiz - navegação sequencial normal
+                    if (this.currentQuestionIndex > 0) {
+                        this.currentQuestionIndex--;
+                        this.renderQuestion();
+                    }
+                }
+            }
+
+            nextQuestion() {
+                if (this.studyMode === 'review') {
+                    // No modo revisão, navegar apenas entre perguntas concluídas
+                    const user = this.currentUser ? this.data.users[this.currentUser] : null;
+                    if (!user || user.progress.length === 0) return;
+                    
+                    // Ordenar progresso e encontrar índice atual
+                    const completedIds = user.progress.sort((a, b) => a - b);
+                    const currentId = QUESTIONS_DATA[this.currentQuestionIndex].id;
+                    const currentIndexInCompleted = completedIds.indexOf(currentId);
+                    
+                    // Se encontrou e não é o último, vá para o próximo concluído
+                    if (currentIndexInCompleted < completedIds.length - 1) {
+                        const nextCompletedId = completedIds[currentIndexInCompleted + 1];
+                        this.currentQuestionIndex = QUESTIONS_DATA.findIndex(q => q.id === nextCompletedId);
+                        this.renderQuestion();
+                    }
+                } else {
+                    // Modo normal e quiz - navegação sequencial normal
+                    if (this.currentQuestionIndex < QUESTIONS_DATA.length - 1) {
+                        this.currentQuestionIndex++;
+                        this.renderQuestion();
+                    }
+                }
+            }
+
+            jumpToQuestion(index) {
+                this.currentQuestionIndex = index;
+                this.renderQuestion();
+                this.closeModal('matrix-modal');
+            }
+
+            // ============================================
+            // PROGRESSO E CONQUISTAS
+            // ============================================
+            updateProgress() {
+                const user = this.currentUser ? this.data.users[this.currentUser] : null;
+                const completed = user?.progress.length || 0;
+                const total = QUESTIONS_DATA.length;
+                const percentage = Math.round((completed / total) * 100);
+
+                document.getElementById('completed-count').textContent = completed;
+                document.getElementById('total-count').textContent = total;
+                document.getElementById('progress-bar').style.width = `${percentage}%`;
+
+                // Renderizar conquistas
+                const container = document.getElementById('achievements-container');
+                if (!user) {
+                    container.innerHTML = '';
+                    return;
+                }
+
+                container.innerHTML = this.achievements.map(ach => {
+                    const unlocked = ach.condition(user);
+                    return `<div class="achievement-badge ${unlocked ? 'unlocked' : ''}">${ach.name}</div>`;
+                }).join('');
+            }
+
+            toggleComplete() {
+                if (!this.currentUser) {
+                    this.showToast('Selecione um usuário primeiro', 'error');
+                    return;
+                }
+
+                const user = this.data.users[this.currentUser];
+                const questionId = QUESTIONS_DATA[this.currentQuestionIndex].id;
+                const index = user.progress.indexOf(questionId);
+
+                if (index > -1) {
+                    user.progress.splice(index, 1);
+                    this.showToast('Lição desmarcada', 'info');
+                } else {
+                    // Verificar ordem sequencial
+                    const prevId = questionId - 1;
+                    if (prevId > 0 && !user.progress.includes(prevId)) {
+                        this.showToast('Complete a lição anterior primeiro!', 'error');
+                        return;
+                    }
+                    
+                    user.progress.push(questionId);
+                    user.progress.sort((a, b) => a - b);
+                    this.showToast('🎉 Lição concluída!', 'success');
+                    this.updateStreak(true);
+                }
+
+                this.saveData();
+                this.renderQuestion();
+                this.updateProgress();
+            }
+
+            toggleFavorite() {
+                if (!this.currentUser) {
+                    this.showToast('Selecione um usuário primeiro', 'error');
+                    return;
+                }
+
+                const user = this.data.users[this.currentUser];
+                const questionId = QUESTIONS_DATA[this.currentQuestionIndex].id;
+                const index = user.favorites.indexOf(questionId);
+
+                if (index > -1) {
+                    user.favorites.splice(index, 1);
+                    this.showToast('Removido dos favoritos', 'info');
+                } else {
+                    user.favorites.push(questionId);
+                    user.favorites.sort((a, b) => a - b);
+                    this.showToast('❤️ Adicionado aos favoritos!', 'success');
+                }
+
+                this.saveData();
+                this.renderQuestion();
+            }
+
+            markAllComplete() {
+                if (!this.currentUser) return;
+                
+                if (confirm('Marcar todas as perguntas como concluídas?')) {
+                    const user = this.data.users[this.currentUser];
+                    user.progress = QUESTIONS_DATA.map(q => q.id);
+                    this.saveData();
+                    this.renderQuestion();
+                    this.updateProgress();
+                    this.showToast('Todas as lições marcadas como concluídas!', 'success');
+                    this.closeModal('account-modal');
+                }
+            }
+
+            resetProgress() {
+                if (!this.currentUser) return;
+                
+                if (confirm('Resetar todo o progresso? Esta ação não pode ser desfeita.')) {
+                    const user = this.data.users[this.currentUser];
+                    user.progress = [];
+                    user.favorites = [];
+                    user.notes = {};
+                    this.saveData();
+                    this.renderQuestion();
+                    this.updateProgress();
+                    this.showToast('Progresso resetado', 'info');
+                    this.closeModal('account-modal');
+                }
+            }
+
+            // ============================================
+            // STREAK E ESTATÍSTICAS
+            // ============================================
+            updateStreak(saveActivity = false) {
+                if (!this.currentUser) return;
+                
+                const user = this.data.users[this.currentUser];
+                const today = new Date().toDateString();
+                const lastStudy = user.streak.lastStudy;
+
+                if (saveActivity) {
+                    if (lastStudy !== today) {
+                        const yesterday = new Date();
+                        yesterday.setDate(yesterday.getDate() - 1);
+                        
+                        if (lastStudy === yesterday.toDateString()) {
+                            user.streak.count++;
+                        } else if (lastStudy !== today) {
+                            user.streak.count = 1;
+                        }
+                        
+                        user.streak.lastStudy = today;
+                        this.saveData();
+                    }
+                }
+            }
+
+            showStatsModal() {
+                if (!this.currentUser) return;
+                
+                const user = this.data.users[this.currentUser];
+                const totalCompleted = user.progress.length;
+                const percentage = Math.round((totalCompleted / QUESTIONS_DATA.length) * 100);
+                
+                document.getElementById('streak-number').textContent = user.streak.count;
+                document.getElementById('stat-total-completed').textContent = totalCompleted;
+                document.getElementById('stat-percentage').textContent = percentage + '%';
+                document.getElementById('stat-favorites').textContent = user.favorites.length;
+                document.getElementById('stat-notes').textContent = Object.keys(user.notes).length;
+                
+                this.openModal('stats-modal');
+            }
+
+            // ============================================
+            // MATRIZ DE PERGUNTAS
+            // ============================================
+            showMatrixModal() {
+                const user = this.currentUser ? this.data.users[this.currentUser] : null;
+                const grid = document.getElementById('matrix-grid');
+                
+                grid.innerHTML = QUESTIONS_DATA.map((q, idx) => {
+                    const isCompleted = user?.progress.includes(q.id);
+                    const isCurrent = idx === this.currentQuestionIndex;
+                    
+                    return `
+                        <div class="matrix-cell ${isCompleted ? 'completed' : 'uncompleted'} ${isCurrent ? 'current' : ''}"
+                             onclick="app.jumpToQuestion(${idx})"
+                             title="${q.title}">
+                            ${q.id}
+                        </div>
+                    `;
+                }).join('');
+                
+                this.openModal('matrix-modal');
+            }
+
+            // ============================================
+            // ANOTAÇÕES
+            // ============================================
+            saveNotes() {
+                if (!this.currentUser) {
+                    this.showToast('Selecione um usuário primeiro', 'error');
+                    return;
+                }
+
+                const user = this.data.users[this.currentUser];
+                const questionId = QUESTIONS_DATA[this.currentQuestionIndex].id;
+                const notes = document.getElementById('notes-textarea').value.trim();
+
+                if (notes) {
+                    user.notes[questionId] = notes;
+                    this.showToast('Anotação salva!', 'success');
+                } else {
+                    delete user.notes[questionId];
+                }
+
+                this.saveData();
+            }
+
+            clearNotes() {
+                document.getElementById('notes-textarea').value = '';
+                this.saveNotes();
+            }
+
+            // ============================================
+            // MODOS DE ESTUDO
+            // ============================================
+            setStudyMode(mode) {
+                const wasReviewMode = this.studyMode === 'review';
+                this.studyMode = mode;
+
+                document.querySelectorAll('.study-mode-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.mode === mode);
+                });
+
+                if (mode === 'review') {
+                    // Ir para primeira pergunta completada ou manter atual
+                    const user = this.currentUser ? this.data.users[this.currentUser] : null;
+                    if (user && user.progress.length > 0) {
+                        const firstCompleted = Math.min(...user.progress) - 1;
+                        this.currentQuestionIndex = Math.max(0, firstCompleted);
+                    }
+                }
+
+                // SEMPRE renderizar a pergunta ao mudar de modo para atualizar os botões de navegação
+                this.renderQuestion();
+
+                // CORREÇÃO: Garantir que os botões de navegação sejam reabilitados ao sair do modo revisão
+                if (wasReviewMode && mode !== 'review') {
+                    document.getElementById('prev-btn').disabled = this.currentQuestionIndex === 0;
+                    document.getElementById('next-btn').disabled = this.currentQuestionIndex === QUESTIONS_DATA.length - 1;
+                }
+
+                this.updateQuizMode();
+                this.showToast(`Modo ${mode === 'normal' ? 'Estudo' : mode === 'quiz' ? 'Quiz' : 'Revisão'} ativado`, 'info');
+            }
+
+            updateQuizMode() {
+                const container = document.getElementById('question-content');
+                const revealBtn = document.getElementById('reveal-btn');
+                
+                if (this.studyMode === 'quiz') {
+                    container.classList.add('quiz-mode');
+                    container.classList.remove('revealed');
+                    revealBtn.classList.remove('hidden');
+                } else {
+                    container.classList.remove('quiz-mode', 'revealed');
+                    revealBtn.classList.add('hidden');
+                }
+            }
+
+            revealAnswer() {
+                const container = document.getElementById('question-content');
+                container.classList.add('revealed');
+                document.getElementById('reveal-btn').classList.add('hidden');
+            }
+
+            // ============================================
+            // TEMA CLARO/ESCURO
+            // ============================================
+            loadTheme() {
+                const savedTheme = localStorage.getItem('devotionalTheme') || 'light';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                this.updateThemeUI(savedTheme);
+            }
+
+            toggleTheme() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('devotionalTheme', newTheme);
+                this.updateThemeUI(newTheme);
+            }
+
+            updateThemeUI(theme) {
+                const icon = document.getElementById('theme-icon');
+                const text = document.getElementById('theme-text');
+                if (theme === 'dark') {
+                    icon.textContent = '☀️';
+                    text.textContent = 'Modo Claro';
+                } else {
+                    icon.textContent = '🌙';
+                    text.textContent = 'Modo Escuro';
+                }
+            }
+
+            // ============================================
+            // MODAIS
+            // ============================================
+            openModal(modalId) {
+                document.getElementById(modalId).classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            closeModal(modalId) {
+                document.getElementById(modalId).classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            showAccountModal() {
+                if (!this.currentUser) return;
+                
+                const user = this.data.users[this.currentUser];
+                document.getElementById('account-avatar').textContent = user.profile.avatar;
+                document.getElementById('account-avatar').style.background = user.profile.color + '20';
+                document.getElementById('account-avatar').style.color = user.profile.color;
+                document.getElementById('account-name').textContent = user.profile.name;
+                document.getElementById('account-name').style.color = user.profile.color;
+                
+                // Se for convidado, mostrar mensagem diferente
+                if (user.isGuest) {
+                    document.getElementById('account-created').textContent = 'Modo temporário - progresso não salvo';
+                    // Alterar botão de excluir para "Sair"
+                    const deleteBtn = document.querySelector('.account-action-btn.danger');
+                    if (deleteBtn) {
+                        deleteBtn.innerHTML = '🚪 Sair do Modo Convidado';
+                    }
+                } else {
+                    const createdDate = new Date(user.profile.createdAt).toLocaleDateString('pt-BR');
+                    document.getElementById('account-created').textContent = `Membro desde ${createdDate}`;
+                    // Restaurar botão de excluir
+                    const deleteBtn = document.querySelector('.account-action-btn.danger');
+                    if (deleteBtn) {
+                        deleteBtn.innerHTML = '🗑️ Excluir Conta';
+                    }
+                }
+                
+                this.openModal('account-modal');
+            }
+
+            // ============================================
+            // COMPARTILHAMENTO
+            // ============================================
+            shareQuestion() {
+                const question = QUESTIONS_DATA[this.currentQuestionIndex];
+                const shareText = `${question.title}\n\nResposta: ${question.answer}\n\n${question.verse}\n"${question.verseText}"`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Livro Devocional - Catecismo',
+                        text: shareText
+                    }).catch(() => {});
+                } else {
+                    navigator.clipboard.writeText(shareText).then(() => {
+                        this.showToast('Versículo copiado para a área de transferência!', 'success');
+                    }).catch(() => {
+                        this.showToast('Erro ao copiar', 'error');
+                    });
+                }
+            }
+
+            // ============================================
+            // EXPORTAR/IMPORTAR
+            // ============================================
+            exportData() {
+                if (!this.currentUser) return;
+                
+                const dataStr = JSON.stringify(this.data.users[this.currentUser], null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `devocional-${this.currentUser}-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                this.showToast('Dados exportados!', 'success');
+            }
+
+            importDataPrompt() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            try {
+                                const imported = JSON.parse(event.target.result);
+                                if (this.validateUserData(imported)) {
+                                    this.data.users[this.currentUser] = imported;
+                                    this.saveData();
+                                    this.renderQuestion();
+                                    this.updateProgress();
+                                    this.showToast('Dados importados com sucesso!', 'success');
+                                    this.closeModal('account-modal');
+                                } else {
+                                    this.showToast('Arquivo inválido', 'error');
+                                }
+                            } catch (err) {
+                                this.showToast('Erro ao importar dados', 'error');
+                            }
+                        };
+                        reader.readAsText(file);
+                    }
+                };
+                input.click();
+            }
+
+            validateUserData(data) {
+                return data && 
+                       data.profile && 
+                       typeof data.profile.name === 'string' &&
+                       Array.isArray(data.progress) &&
+                       Array.isArray(data.favorites) &&
+                       typeof data.notes === 'object';
+            }
+
+            // ============================================
+            // SISTEMA DE AJUDA
+            // ============================================
+            showContextualHelp() {
+                const helpContent = document.getElementById('contextual-help-content');
+                const helpTitle = document.getElementById('contextual-help-title');
+                
+                // Determinar qual ajuda mostrar baseado no estado atual
+                if (document.getElementById('user-selector-modal').classList.contains('active')) {
+                    helpTitle.textContent = '❓ Ajuda: Seleção de Usuário';
+                    helpContent.innerHTML = this.getHelpContent('userSelector');
+                } else if (!this.currentUser) {
+                    helpTitle.textContent = '❓ Ajuda: Bem-vindo!';
+                    helpContent.innerHTML = this.getHelpContent('welcome');
+                } else {
+                    helpTitle.textContent = '❓ Ajuda: Estudando o Catecismo';
+                    helpContent.innerHTML = this.getHelpContent('studying');
+                }
+                
+                this.openModal('contextual-help-modal');
+            }
+
+            showHelpSection(section) {
+                // Atualizar botões ativos
+                document.querySelectorAll('.help-topic-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                event.target.closest('.help-topic-btn').classList.add('active');
+                
+                // Carregar conteúdo
+                const content = document.getElementById('help-content');
+                content.innerHTML = this.getFullHelpContent(section);
+            }
+
+            getHelpContent(topic) {
+                const contents = {
+                    welcome: `
+                        <div class="help-section">
+                            <div class="help-text">
+                                <p>Olá! Bem-vindo ao <strong>Livro Devocional para Crianças</strong>! 📖✨</p>
+                                <p>Este é um aplicativo para ajudar você a aprender o Catecismo de uma forma divertida e fácil!</p>
+                            </div>
+                            <div class="help-tip">
+                                <div class="help-tip-title">💡 Dica rápida</div>
+                                <div>Para começar, você pode:</div>
+                                <ul style="margin: 8px 0; padding-left: 20px;">
+                                    <li>Criar seu próprio usuário com um avatar legal</li>
+                                    <li>Usar o modo <strong>Convidado</strong> para testar (sem salvar progresso)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `,
+                    userSelector: `
+                        <div class="help-section">
+                            <div class="help-section-title">👤 Escolhendo um Usuário</div>
+                            <div class="help-text">
+                                <p>Aqui você pode escolher como quer usar o aplicativo:</p>
+                            </div>
+                            <div class="help-tip">
+                                <div class="help-tip-title">🎮 Modo Convidado</div>
+                                <div>Perfeito para testar o aplicativo! Seu progresso <strong>não será salvo</strong> quando você sair.</div>
+                            </div>
+                            <div class="help-tip">
+                                <div class="help-tip-title">👤 Criar um Usuário</div>
+                                <div>Escolha um nome, um avatar fofo e uma cor! Seu progresso será salvo no seu dispositivo.</div>
+                            </div>
+                            <div class="help-text">
+                                <p><strong>Dica:</strong> Se você já tem um usuário, é só clicar no card dele!</p>
+                            </div>
+                        </div>
+                    `,
+                    studying: `
+                        <div class="help-section">
+                            <div class="help-section-title">📚 Como Estudar</div>
+                            <div class="help-text">
+                                <p>Cada pergunta do catecismo tem:</p>
+                                <ul style="margin: 8px 0; padding-left: 20px;">
+                                    <li><strong>A pergunta</strong> em letras grandes</li>
+                                    <li><strong>A resposta</strong> destacada em verde</li>
+                                    <li><strong>O versículo da Bíblia</strong> com a referência</li>
+                                    <li><strong>Um devocional</strong> explicando de forma simples</li>
+                                </ul>
+                            </div>
+                            <div class="help-tip">
+                                <div class="help-tip-title">✓ Marcando como Concluída</div>
+                                <div>Quando você terminar de estudar uma pergunta, clique em <strong>"Marcar como Concluída"</strong> para salvar seu progresso!</div>
+                            </div>
+                            <div class="help-tip">
+                                <div class="help-tip-title">📝 Anotações</div>
+                                <div>Você pode escrever suas próprias anotações sobre cada lição. Elas ficam salvas no seu perfil!</div>
+                            </div>
+                        </div>
+                    `
+                };
+                return contents[topic] || contents.welcome;
+            }
+
+            getFullHelpContent(section) {
+                const contents = {
+                    welcome: `
+                        <div class="help-section">
+                            <div class="help-section-title">👋 Bem-vindo ao Livro Devocional!</div>
+                            <div class="help-text">
+                                <p>Este aplicativo foi criado especialmente para <strong>crianças</strong> aprenderem o Catecismo de uma forma divertida!</p>
+                                <p>O Catecismo é como um "manual de instruções" da nossa fé cristã. Ele nos ensina:</p>
+                                <ul style="margin: 12px 0; padding-left: 24px;">
+                                    <li>Quem é Deus</li>
+                                    <li>O que Ele fez por nós</li>
+                                    <li>Como devemos viver</li>
+                                </ul>
+                                <p>Aqui você vai encontrar <strong>50 perguntas e respostas</strong> sobre a nossa fé, todas com:</p>
+                                <ul style="margin: 12px 0; padding-left: 24px;">
+                                    <li>Versículos da Bíblia 📖</li>
+                                    <li>Explicações fáceis de entender 💭</li>
+                                    <li>Maneiras de marcar seu progresso 📈</li>
+                                </ul>
+                            </div>
+                            <div class="help-tip">
+                                <div class="help-tip-title">🌟 Como começar?</div>
+                                <div>
+                                    1. Clique em <strong>"Trocar Usuário"</strong> no canto superior direito<br>
+                                    2. Crie seu usuário ou use o modo <strong>Convidado</strong><br>
+                                    3. Comece a estudar pela pergunta 1!
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    users: `
+                        <div class="help-section">
+                            <div class="help-section-title">👤 Usuários e Contas</div>
+                            <div class="help-text">
+                                <p>Você pode criar um usuário para salvar todo o seu progresso. Cada usuário tem:</p>
+                            </div>
+                            <div class="help-tip">
+                                <div class="help-tip-title">🎨 Personalização</div>
+                                <div>Escolha um nome (até 2 palavras), um avatar fofo (emoji) e uma cor que você goste!</div>
+                            </div>
+                            <div class="help-tip">
+                                <div class="help-tip-title">💾 Seus dados ficam seguros</div>
+                                <div>Tudo é salvo no <strong>seu navegador</strong> (no seu dispositivo). Nada é enviado para a internet!</div>
+                            </div>
+                            <div class="help-tip">
+                                <div class="help-tip-title">🎮 Modo Convidado</div>
+                                <div>Se você não quiser criar um usuário, pode usar o modo Convidado. Mas lembre-se: quando você fechar o aplicativo, todo o progresso será perdido!</div>
+                            </div>
+                            <div class="help-tip">
+                                <div class="help-tip-title">📥 Exportar e Importar</div>
+                                <div>Na sua conta, você pode exportar seus dados para um arquivo. Assim, se trocar de computador ou celular, você pode importar tudo de volta!</div>
+                            </div>
+                        </div>
+                    `,
+                    study: `
+                        <div class="help-section">
+                            <div class="help-section-title">📚 Modos de Estudo</div>
+                            <div class="help-text">
+                                <p>Você pode estudar de três formas diferentes:</p>
+                            </div>
+                            <div class="help-tip">
+                                <div class="help-tip-title">📚 Modo Estudo (padrão)</div>
+                                <div>Veja todas as informações: pergunta, resposta, versículo e devocional. Ideal para aprender pela primeira vez!</div>
+                            </div>
+                            <div class="help-tip">
+                                <div class="help-tip-title">🎯 Modo Quiz</div>
+                                <div>A resposta fica <strong>escondida</strong>! Tente responder sozinho antes de ver a resposta. Ótimo para testar o que você aprendeu!</div>
+                            </div>
+                            <div class="help-tip">
+                                <div class="help-tip-title">✅ Modo Revisão</div>
+                                <div>Mostra <strong>APENAS as perguntas que você já completou</strong>! Os botões de próximo/anterior navegam somente entre as lições concluídas, pulando todas as outras. Perfeito para revisar apenas o que já estudou!</div>
+                            </div>
+                            <div class="help-text" style="margin-top: 16px;">
+                                <p>Para trocar o modo, clique nos botões na parte superior da tela!</p>
+                            </div>
+                        </div>
+                    `,
+                    progress: `
+                        <div class="help-section">
+                            <div class="help-section-title">📈 Progresso e Conquistas</div>
+                            <div class="help-text">
+                                <p>Acompanhe como você está indo no seu estudo!</p>
+                            </div>
+                            <div class="help-tip">
+                                <div class="help-tip-title">📊 Barra de Progresso</div>
+                                <div>Mostra quantas perguntas você já completou das 50 totais. Quanto mais verde, melhor!</div>
+                            </div>
+                            <div class="help-tip">
+                                <div class="help-tip-title">🏆 Conquistas</div>
+                                <div>Ganhe medalhas especiais ao completar metas:
+                                    <ul style="margin-top: 8px; padding-left: 20px;">
+                                        <li>🌟 <strong>Primeira Lição</strong> - Complete 1 pergunta</li>
+                                        <li>🔥 <strong>10 Completadas</strong> - Complete 10 perguntas</li>
+                                        <li>⭐ <strong>Metade do Caminho</strong> - Complete 25 perguntas</li>
+                                        <li>🏆 <strong>Catecismo Completo</strong> - Complete todas as 50!</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="help-tip">
+                                <div class="help-tip-title">🔥 Dias Consecutivos (Streak)</div>
+                                <div>Estude todos os dias para aumentar sua sequência! Quanto mais dias seguidos, mais legal!</div>
+                            </div>
+                            <div class="help-tip">
+                                <div class="help-tip-title">🔲 Matriz de Perguntas</div>
+                                <div>Clique no botão de grade (🔲) para ver todas as 50 perguntas de uma vez. Verde = concluída, cinza = pendente!</div>
+                            </div>
+                        </div>
+                    `,
+                    features: `
+                        <div class="help-section">
+                            <div class="help-section-title">✨ Outras Funcionalidades</div>
+                            
+                            <div class="help-tip">
+                                <div class="help-tip-title">❤️ Favoritos</div>
+                                <div>Marque as perguntas que você mais gostou com um coração! Para ver suas favoritas, use o menu da sua conta.</div>
+                            </div>
+                            
+                            <div class="help-tip">
+                                <div class="help-tip-title">📝 Anotações</div>
+                                <div>Escreva suas reflexões sobre cada lição. É um ótimo jeito de guardar o que Deus falou com você!</div>
+                            </div>
+                            
+                            <div class="help-tip">
+                                <div class="help-tip-title">📤 Compartilhar</div>
+                                <div>Gostou de uma lição? Compartilhe com seus amigos e familiares! Você pode enviar por WhatsApp, email ou copiar o texto.</div>
+                            </div>
+                            
+                            <div class="help-tip">
+                                <div class="help-tip-title">🌙 Tema Claro/Escuro</div>
+                                <div>Clique no botão do sol/lua para mudar o tema do aplicativo. Deixe do jeito que você preferir!</div>
+                            </div>
+                            
+                            <div class="help-tip">
+                                <div class="help-tip-title">⌨️ Navegação por Teclado</div>
+                                <div>Use as <strong>setas do teclado</strong> (← →) para navegar entre as perguntas. Aperte <strong>ESPAÇO</strong> para marcar como concluída!</div>
+                            </div>
+                        </div>
+                    `,
+                    shortcuts: `
+                        <div class="help-section">
+                            <div class="help-section-title">⌨️ Atalhos do Teclado</div>
+                            <div class="help-text">
+                                <p>Se você estiver usando um computador, esses atalhos facilitam a navegação:</p>
+                            </div>
+                            <div class="help-shortcuts">
+                                <div class="help-shortcut-key">←</div>
+                                <div class="help-shortcut-desc">Pergunta anterior</div>
+                                
+                                <div class="help-shortcut-key">→</div>
+                                <div class="help-shortcut-desc">Próxima pergunta</div>
+                                
+                                <div class="help-shortcut-key">Espaço</div>
+                                <div class="help-shortcut-desc">Marcar/Desmarcar como concluída</div>
+                                
+                                <div class="help-shortcut-key">Esc</div>
+                                <div class="help-shortcut-desc">Fechar janelas (modais)</div>
+                            </div>
+                            <div class="help-text" style="margin-top: 16px;">
+                                <p>No <strong>celular ou tablet</strong>, você pode deslizar o dedo para os lados (esquerda/direita) para mudar de pergunta!</p>
+                            </div>
+                        </div>
+                    `
+                };
+                return contents[section] || contents.welcome;
+            }
+
+            // ============================================
+            // TOAST NOTIFICATIONS
+            // ============================================
+            showToast(message, type = 'info') {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.innerHTML = `
+                    <span>${message}</span>
+                `;
+                
+                container.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(20px)';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+        }
+
+        // ============================================
+        // INICIALIZAÇÃO DA APLICAÇÃO
+        // ============================================
+        const app = new DevotionalApp();
+        
+        // ============================================
+        // REGISTRO DO SERVICE WORKER (PWA)
+        // ============================================
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(registration => {
+                        console.log('[PWA] Service Worker registrado com sucesso:', registration.scope);
+                        
+                        // Verificar atualizações do Service Worker
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    console.log('[PWA] Nova versão disponível');
+                                    // Opcional: notificar usuário sobre nova versão
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.error('[PWA] Erro ao registrar Service Worker:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

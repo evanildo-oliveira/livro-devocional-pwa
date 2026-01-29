@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Fundo -->
+  <rect width="512" height="512" fill="#4CAF50" rx="64"/>
+  
+  <!-- Círculo interno -->
+  <circle cx="256" cy="256" r="180" fill="#66BB6A"/>
+  
+  <!-- Livro/Bíblia -->
+  <rect x="156" y="136" width="200" height="240" rx="10" fill="#FFFFFF"/>
+  <rect x="166" y="146" width="180" height="220" rx="5" fill="#E8F5E9"/>
+  
+  <!-- Cruz -->
+  <rect x="236" y="176" width="40" height="160" fill="#4CAF50" rx="5"/>
+  <rect x="196" y="216" width="120" height="40" fill="#4CAF50" rx="5"/>
+  
+  <!-- Linhas do livro -->
+  <rect x="186" y="286" width="140" height="8" fill="#81C784" rx="2"/>
+  <rect x="186" y="306" width="140" height="8" fill="#81C784" rx="2"/>
+  <rect x="186" y="326" width="100" height="8" fill="#81C784" rx="2"/>
+  
+  <!-- Coração (amor/devoção) -->
+  <circle cx="356" cy="156" r="35" fill="#FF5252"/>
+  <text x="356" y="168" font-size="40" text-anchor="middle" fill="white">❤</text>
+</svg>
